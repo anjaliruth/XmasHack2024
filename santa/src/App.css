@@ -5,14 +5,17 @@
   background-repeat: no-repeat;
   height: 150vh; /* Full screen height */
   width: 100%; /* Full width */
+  font-family: "Great Vibes", cursive;
+  font-weight: 1000;
   /* display: flex;
   justify-content: center;
   flex-direction: column; */
 }
 
 .header {
-  color: white;
+  color: #D50032;
   margin: 0 auto;
+  padding-top: 20px;
   display: flex;
   justify-content: center;
 }
@@ -20,30 +23,43 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin-top: 150px;
-  background-color: aquamarine;
-}
-.meterWithScore{
-  display: flex;
-  width: 100vw;
-  background-color: brown;
+  margin-top: 100px;
 }
 .meterWheel {
   position: "relative";
   width: "600px";
   height: "300px";
   margin: "0 auto";
-  background-color: pink;
 }
 
 .scoreDiv {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  background-color: yellow;
   margin: 0 auto;
   width: 150px;
 }
 .score {
+  margin: 5px;
+  padding-top: 30px;
   text-align: center;
+  color: black;
+}
+.outputTextDiv {
+  font-weight: 900;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 500px;
+  margin: 0 auto;
+}
+
+.outputText {
+  background-color: rgba(211, 47, 47, 0.8);
+  border-radius: 10px;
+  font-size: 30px;
+  padding: 10px;
+  font-weight: 600;
+  text-align: center;
+  /* color: rgba(34, 139, 34, 0.9); */
 }
