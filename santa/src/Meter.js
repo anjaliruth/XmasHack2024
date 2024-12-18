@@ -9,21 +9,14 @@ const Meter = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-        height: "80vh",
-        alignContent: 'center'
-      }}
-    >
-      <div
+    <div className="meter">
+      <div className="meterWheel"
         style={{
           position: "relative",
           width: "600px",
           height: "300px",
           margin: "0 auto",
+          backgroundColor: "pink",
         }}
       >
         {/* Semi-circle */}
@@ -51,8 +44,8 @@ const Meter = () => {
         </svg>
         {/* Needle */}
         <svg
-          width="600"
-          height="300"
+          width="1000"
+          height="500"
           style={{
             position: "absolute",
             top: "150",
@@ -68,24 +61,35 @@ const Meter = () => {
           />
         </svg>
       </div>
+      <div className="scoreDiv">
+        <h2 className="score">Score: {score}</h2>
+
+      </div>
       {/* Controls */}
       <div
         style={{
           display: "flex",
           justifyContent: "center",
-        //   alignItems: "center",
+          //   alignItems: "center",
           flexDirection: "column",
         }}
       >
-        <div style={{width: '200px', display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "20px"}}>
-          <input
+        <div
+          style={{
+            width: "200px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+        <input
             type="range"
             min="-100"
             max="100"
             value={score}
             onChange={(e) => setScore(Number(e.target.value))}
           />
-          <p>Score: {score}</p>
         </div>
       </div>
     </div>
