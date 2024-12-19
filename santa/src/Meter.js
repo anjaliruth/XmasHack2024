@@ -1,4 +1,7 @@
-import React, { useState, useRef } from "react";
+// React Component (Meter.js)
+
+import React, { useState, useEffect } from "react";
+
 const nicePhrases = [
   "Keep it up, you're making the world a better place!",
   "Nice! Someone's definitely on Santa's good side.",
@@ -28,7 +31,25 @@ const naughtyPhrases = [
 const Meter = () => {
   const [score, setScore] = useState(0); // Score ranges from -100 to 100
   const [message, setMessage] = useState(""); // Message to display
-  const audioRef = useRef(null);
+
+  useEffect(() => {
+    // Create a WebSocket connection to the server
+    const socket = new WebSocket('ws://localhost:3001');
+
+    // Handle incoming messages from the server
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.meterValue !== undefined) {
+        const newScore = data.meterValue;
+        setScore(newScore);
+        setMessage(newScore > score ? getRandomPhrase(nicePhrases) : getRandomPhrase(naughtyPhrases));
+      }
+    };
+
+    // // Clean up the WebSocket connection when the component unmounts
+    // return () => socket.close();
+  }, []);
+
   const calculateRotation = () => {
     // Map score (-100 to 100) to a rotation angle (-90 to 90)
     return (score / 100) * 90;
@@ -38,30 +59,7 @@ const Meter = () => {
     const randomIndex = Math.floor(Math.random() * phrases.length);
     return phrases[randomIndex];
   };
-  // TODO: get sound to work
-  const playSound = (soundFile) => {
-    const audio = new Audio(soundFile);
-    audio.play();
-  };
 
-  const recalculateScore = (e) => {
-    const prevScore = score;
-    const newScore = Number(e.target.value);
-    setScore(newScore);
-
-    if (newScore > prevScore) {
-      setMessage(getRandomPhrase(nicePhrases));
-      //   TODO: playSound once you get audio to work **Uncommenting below will cause app to break (until audio is properly implemented)
-      //
-      //   playSound('./public/audio/jinglebells.mp3')
-    } else if (newScore < prevScore) {
-      setMessage(getRandomPhrase(naughtyPhrases));
-
-      //   TODO: playSound for naughty scenario once audio can work
-    } else {
-      setMessage("");
-    }
-  };
   return (
     <div className="meter">
       <div
@@ -73,59 +71,14 @@ const Meter = () => {
           margin: "0 auto",
         }}
       >
-        {/* Semi-circle */}
         <svg width="600" height="300" viewBox="0 0 300 150">
-          <path
-            d="M10,150 A140,140 0 0,1 290,150"
-            fill="none"
-            stroke="#ccc"
-            strokeWidth="10"
-          />
-          <path
-            d="M10,150 A140,140 0 0,1 150,10"
-            fill="none"
-            stroke="#8F002B"
-            strokeWidth="10"
-          />
-          <path
-            d="M150,10 A140,140 0 0,1 290,150"
-            fill="none"
-            stroke="#16302B"
-            strokeWidth="10"
-          />
-          <text
-            x="35"
-            y="148"
-            fill="#F7E2CA"
-            fontSize="14"
-            fontWeight="bold"
-            textAnchor="middle"
-          >
-            -100
-          </text>
-          <text
-            x="150"
-            y="30"
-            fill="#F7E2CA"
-            fontSize="14"
-            fontWeight="bold"
-            textAnchor="middle"
-          >
-            0
-          </text>
-          <text
-            x="270"
-            y="148"
-            fill="#F7E2CA"
-            text-shadow="2px 2px 0px black"
-            fontSize="14"
-            fontWeight="bold"
-            textAnchor="middle"
-          >
-            100
-          </text>
+          <path d="M10,150 A140,140 0 0,1 290,150" fill="none" stroke="#ccc" strokeWidth="10" />
+          <path d="M10,150 A140,140 0 0,1 150,10" fill="none" stroke="#8F002B" strokeWidth="10" />
+          <path d="M150,10 A140,140 0 0,1 290,150" fill="none" stroke="#16302B" strokeWidth="10" />
+          <text x="35" y="148" fill="#F7E2CA" fontSize="14" fontWeight="bold" textAnchor="middle">-100</text>
+          <text x="150" y="30" fill="#F7E2CA" fontSize="14" fontWeight="bold" textAnchor="middle">0</text>
+          <text x="270" y="148" fill="#F7E2CA" fontSize="14" fontWeight="bold" textAnchor="middle">100</text>
         </svg>
-        {/* Needle */}
         <svg
           width="1000"
           height="500"
@@ -144,37 +97,8 @@ const Meter = () => {
       <div className="scoreDiv">
         <h1 className="score">Score: {score}</h1>
       </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          style={{
-            width: "200px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {/* TODO: delete after connecting web socket as this slider is just meant to show what happens when the score changes. */}
-          {/* Slider Input  */}
-          <input
-            type="range"
-            min="-100"
-            max="100"
-            value={score}
-            onChange={(e) => recalculateScore(e)}
-          />
-        </div>
-        {/* Display Message */}
-        <div className="outputTextDiv">
-          {message && <h3 className="outputText">{message}</h3>}
-        </div>
+      <div className="outputTextDiv">
+        {message && <h3 className="outputText">{message}</h3>}
       </div>
     </div>
   );
